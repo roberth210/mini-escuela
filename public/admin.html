@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>ADMIN</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#001a44;
+color:white;
+text-align:center;
+}
+
+input{
+padding:10px;
+margin:5px;
+}
+
+button{
+padding:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>PANEL ADMIN</h2>
+
+<h3>Crear usuario</h3>
+
+<input id="u" placeholder="usuario">
+<input id="p" placeholder="pass">
+
+<button onclick="create()">Crear</button>
+
+<h3>Usuarios</h3>
+
+<div id="list"></div>
+
+<script>
+
+function load(){
+
+fetch("/users")
+
+.then(r=>r.json())
+.then(data=>{
+
+let html=""
+
+data.forEach(u=>{
+
+html+=u.user+" - "+u.pass+
+" <button onclick='del(\""+u.user+"\")'>X</button><br>"
+
+})
+
+document.getElementById("list").innerHTML=html
+
+})
+
+}
+
+function create(){
+
+fetch("/create",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+
+user:document.getElementById("u").value,
+pass:document.getElementById("p").value
+
+})
+
+}).then(load)
+
+}
+
+function del(u){
+
+fetch("/delete",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({user:u})
+
+}).then(load)
+
+}
+
+load()
+
+</script>
+
+</body>
+</html>
